@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - MADA STORE</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-image: url("/uploads/market1.jpg");
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+    .signup-form {
+      width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      margin-top: 50px;
+    }
+   
+  </style>
+</head>
+<body>
+
+  <!-- Sign Up Form -->
+  <div class="container">
+    <form class="signup-form" action="/registercustomer" method="post" onsubmit="return validateForm()">
+      <h2 class="text-center mb-4">Sign Up</h2>
+      <div class="form-group">
+        <label for="inputName">Full Name</label>
+        <input type="text" class="form-control" name="inputName" id="inputName" placeholder="Enter your full name" required>
+      </div>
+      <div class="form-group">
+        <label for="inputEmail">Email</label>
+        <input type="email" class="form-control" name="inputEmail" id="inputEmail" placeholder="Enter your email" required>
+        <small id="emailError" style="color: red;"></small>
+      </div>
+      <div class="form-group">
+        <label for="inputPassword">Password</label>
+        <input type="password" class="form-control" name="inputPassword" id="inputPassword" placeholder="Enter your password" required>
+        <small id="passwordError" style="color: red;"></small>
+      </div>
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" placeholder="Confirm your password" required>
+        <small id="confirmPasswordError" style="color: red;"></small>
+      </div>
+      <div class="form-group">
+        <label>User Type:</label><br>
+        <label class="radio-inline"><input type="radio" name="userType" value="customer" checked> Customer</label>
+        <label class="radio-inline"><input type="radio" name="userType" value="seller"> Seller</label>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+      <p class="text-center mt-3">Already have an account? <a href="/login">Sign In</a></p>
+    </form>
+  </div>
+
+  <!-- Bootstrap JS and dependencies -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    function validateForm() {
+      var password = document.getElementById("inputPassword").value;
+      var confirmPassword = document.getElementById("confirmPassword").value;
+      var email = document.getElementById("inputEmail").value;
+      var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!emailRegex.test(email)) {
+        document.getElementById("emailError").innerHTML = "Invalid email address!";
+        return false;
+      } else {
+        document.getElementById("emailError").innerHTML = "";
+      }
+
+      if (password !== confirmPassword) {
+        document.getElementById("confirmPasswordError").innerHTML = "Passwords do not match!";
+        return false;
+      } else {
+        document.getElementById("confirmPasswordError").innerHTML = "";
+      }
+
+      var passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+      if (!passwordRegex.test(password)) {
+        document.getElementById("passwordError").innerHTML = "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one number.";
+        return false;
+      } else {
+        document.getElementById("passwordError").innerHTML = "";
+      }
+
+      return true;
+    }
+  </script>
+</body>
+</html>

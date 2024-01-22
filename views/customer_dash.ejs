@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Dashboard - MADA STORE</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css">
+  <style>
+    
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+    }
+    .dashboard {
+      padding: 20px;
+      margin-top: 50px;
+    }
+    .order-history {
+      margin-top: 20px;
+    }
+    .account-info {
+      margin-top: 20px;
+    }
+    .saved-items {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">MADA STORE</a>
+
+<div id="userDetails">
+    <!-- Add the flag-icon class based on the country code -->
+    <span id="countryFlag" class="flag-icon"></span>
+</div>
+
+    <span class="flag-icon"></span>
+
+
+
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="/dashboard">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/purchase_verify">Your purchases</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/account">Account</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/saved-items">Saved Items</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="logoutLink" href="#">Logout</a>
+        </li>
+      </ul>
+      <script>
+        document.getElementById('logoutLink').addEventListener('click', function(event) {
+          event.preventDefault(); // Prevents the default behavior of navigating to a new page
+      
+          // Create a form element dynamically
+          const form = document.createElement('form');
+          form.method = 'POST';
+          form.action = '/logout'; // Specify your logout endpoint
+      
+          // Append the form to the document body
+          document.body.appendChild(form);
+      
+          // Submit the form
+          form.submit();
+        });
+      </script>
+    </div>
+  </nav>
+  <div class="container mt-4">
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search for products" aria-label="Search" id="searchInput">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="button" onclick="searchProducts()">Search</button>
+    </form>
+  </div>
+  <section class="featured-products py-5">
+    <div class="container">
+      <h2 class="text-center mb-4">Products</h2>
+      <div class="row" id="featuredProducts">
+        <!-- Featured products will be displayed here -->
+      </div>
+    </div>
+  </section>
+
+<div class="card-body">
+  <!-- ... (other card elements) -->
+  <a href="#" class="btn btn-primary buy-btn" 
+  data-toggle="modal" 
+  data-target="#buyModal" 
+  data-product-name="' + data[i].name + '"
+  data-available-quantity="' + data[i].quantity + '"
+  data-product-price="' + customerData.prices[i] + '"
+  data-product-description="' + data[i].description + '"
+  data-product-product_id="' + data.products[i].product_id + '">Buy Now</a>';
+
+</div>
+
+<!-- Add a modal for Buy Now -->
+<div class="modal fade" id="buyModal" tabindex="-1" role="dialog" aria-labelledby="buyModalLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+  <div class="modal-content">
+      <div class="modal-header">
+          <h5 class="modal-title" id="buyModalLabel">Buy Product</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+      <div class="modal-body">
+          <!-- Display information about the selected product -->
+          <div id="selectedProductInfo"></div>
+
+          <!-- Form for buying the product -->
+<form id="buyProductForm" action="/buy-now" method="POST">
+  <input type="hidden" id="productNameInput" name="productName" value="">
+  <input type="hidden" id="availableQuantityInput" name="availableQuantity" value="">
+  <input type="hidden" id="productPriceInput" name="productPrice" value="">
+  <input type="hidden" id="description" name="description" value="">
+  <input type="hidden" id="product_id" name="product_id" value="">
+  <div class="form-group">
+      <label for="quantity">Quantity:</label>
+      <input type="number" class="form-control" id="quantity" name="quantity" required>
+  </div>
+  <button type="submit" class="btn btn-primary">Buy</button>
+</form>
+
+      </div>
+  </div>
+</div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+$(document).on('click', '.buy-btn', function () {
+    var productName = $(this).data('product-name');
+    var availableQuantity = $(this).data('available-quantity');
+    var productPrice = $(this).data('product-price');
+    var productDescription = $(this).data('product-description');
+    var product_id = $(this).data('product-product_id');
+
+    // Log the values to ensure they are correct
+    console.log("Product Name: " + productName);
+    console.log("Available Quantity: " + availableQuantity);
+    console.log("Product Price: " + productPrice);
+    console.log("Product Description: " + productDescription);
+    console.log("Product product_id: " + product_id);
+
+    // Populate the modal with information about the selected product
+    var selectedProductInfoHTML = '<h5>' + productName + '</h5>';
+    selectedProductInfoHTML += '<p>Available Quantity: ' + availableQuantity + '</p>';
+    selectedProductInfoHTML += '<p>Price: ' + productPrice + '</p>';
+    selectedProductInfoHTML += '<p>Description: ' + productDescription + '</p>';
+    selectedProductInfoHTML += '<p>product_id: ' + product_id + '</p>';
+    $('#selectedProductInfo').html(selectedProductInfoHTML);
+
+    // Set the values for the hidden inputs in the form
+    $('#productNameInput').val(productName);
+    $('#availableQuantityInput').val(availableQuantity);
+    $('#productPriceInput').val(productPrice);
+    $('#description').val(productDescription);
+    $('#product_id').val(product_id);
+
+
+    // Log the values again to ensure they are set in the form
+    console.log("Form - Product Name: " + $('#productNameInput').val());
+    console.log("Form - Available Quantity: " + $('#availableQuantityInput').val());
+    console.log("Form - Product Price: " + $('#productPriceInput').val());
+    console.log("Form - Product Description: " + $('#productDescriptionInput').val());
+    console.log("Form - Product product_id: " + $('#product_id').val());
+});
+
+$('#buyModal').on('hidden.bs.modal', function () {
+    // Clear the form when the modal is closed
+    $('#buyProductForm')[0].reset();
+});
+
+// Handle form submission
+$('#buyProductForm').submit(function (event) {
+    event.preventDefault(); // Prevent default form submission
+    var form = $(this);
+
+
+    // Use AJAX to submit the form data to the server
+    $.ajax({
+        type: form.attr('method'),
+        url: form.attr('action'),
+        data: form.serialize(), // Serialize form data
+        success: function (data) {
+            // Handle success, e.g., show a success message
+            window.location.href = data; // Redirect to the order page
+            console.log(data);
+
+        },
+        error: function (error) {
+            // Handle errors, e.g., show an error message
+            console.log(error);
+        }
+    });
+});
+
+</script>
+
+
+
+  
+
+  
+  <!-- Bootstrap JS and dependencies -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+<script>
+$(document).ready(function() {
+    // AJAX request to fetch featured products and user details
+    $.ajax({
+        url: '/getcustomerproducts',
+        type: 'GET',
+        success: function(data) {
+            console.log(data); // Check the data in the console for debugging
+
+            // Display user information
+            $('#userName').text(data.user.full_name);
+            $('#userEmail').text(data.user.email);
+            $('#userCountry').text(data.user.country);
+
+            // Display country flag using flag-icon class if the country code is available
+            if (data.user.countryCode) {
+                $('#countryFlag').addClass('flag-icon-' + data.user.countryCode.toLowerCase());
+            }
+
+            // Display products
+            var featuredProductsHTML = '';
+            for (var i = 0; i < data.products.length; i++) {
+                featuredProductsHTML += '<div class="col-md-4 mb-4">';
+                featuredProductsHTML += '<div class="card">';
+                
+                // Check if the country code is available before using it
+                if (data.products[i].user && data.products[i].user.countryCode) {
+                    featuredProductsHTML += '<span class="flag-icon flag-icon-' + data.products[i].user.countryCode.toLowerCase() + '"></span>';
+                }
+
+                featuredProductsHTML += '<img src="' + data.products[i].image + '" class="card-img-top" alt="Product Image">';
+                featuredProductsHTML += '<div class="card-body">';
+                featuredProductsHTML += '<h5 class="card-title">' + data.products[i].name + '</h5>';
+                featuredProductsHTML += '<p class="card-text">Available' + data.products[i].quantity + '</p>';
+                featuredProductsHTML += '<p class="card-text">' + data.products[i].description + '</p>';
+                //product_id
+                
+
+                //store the 
+
+                // Calculate price in user's currency
+                var priceInUserCurrency = (data.products[i].price * parseFloat(data.user.currentRates)).toFixed(2);
+                
+                featuredProductsHTML += '<p class="card-text">Price: ' + data.user.currency + ' ' + numberWithCommas(priceInUserCurrency) + '</p>';
+                featuredProductsHTML += '<a href="#" class="btn btn-primary buy-btn" data-toggle="modal" data-target="#buyModal" data-product-name="' + data.products[i].name + '" data-available-quantity="' + data.products[i].quantity + '" data-product-price="' + data.products[i].price + '" data-product-description="' + data.products[i].description + '" data-product-product_id="' + data.products[i].product_id + '">Buy Now</a>';
+                featuredProductsHTML += '</div>';
+                featuredProductsHTML += '</div>';
+                featuredProductsHTML += '</div>';
+            }
+            $('#featuredProducts').html(featuredProductsHTML); // Make sure you have a div with the id "featuredProducts" in your HTML
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+});
+
+// Function to add commas to a number for better readability
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+    function searchProducts() {
+    var searchInput = $('#searchInput').val();
+    $.ajax({
+        url: '/searchproducts',
+        type: 'POST',
+        data: {
+            searchInput: searchInput
+        },
+        success: function (data) {
+            var featuredProductsHTML = '';
+            for (var i = 0; i < data.length; i++) {
+                featuredProductsHTML += '<div class="col-md-4 mb-4">';
+                featuredProductsHTML += '<div class="card">';
+                featuredProductsHTML += '<img src="' + data[i].image + '" class="card-img-top" alt="Product Image">';
+                featuredProductsHTML += '<div class="card-body">';
+                featuredProductsHTML += '<h5 class="card-title">' + data[i].name + '</h5>';
+                featuredProductsHTML += '<p class="card-text">' + data[i].description + '</p>';
+                featuredProductsHTML += '<a href="#" class="btn btn-primary buy-btn" data-toggle="modal" data-target="#buyModal" data-product-name="' + data[i].name + '" data-available-quantity="' + data[i].quantity + '" data-product-price="' + data[i].product_price + '">Buy Now</a>';
+                featuredProductsHTML += '</div>';
+                featuredProductsHTML += '</div>';
+                featuredProductsHTML += '</div>';
+            }
+            $('#featuredProducts').html(featuredProductsHTML);
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+
+  </script>
+</html>

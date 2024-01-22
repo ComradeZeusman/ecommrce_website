@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seller Dashboard - MADA STORE</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+
+    .container-fluid {
+      background-color: #007bff;
+      color: #fff;
+      padding: 20px 0;
+    }
+
+    .card {
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    #last-purchase-price {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container-fluid">
+    <div class="container">
+      <h2 class="text-center text-white mb-4">Verify Your Purchases</h2>
+      <p class="text-center text-white">Hey there! When you verify a new purchase with the same product ID, it temporarily replaces the old one. No worries, though! You can always bring back your old purchases by re-verifying. Just click 'verify' again, and your records will magically show all your products, old and new. So, keep those receipts safe, and happy verifying!.</p>
+    </div>
+  </div>
+
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-md-3">
+        <!-- Sidebar -->
+        <div class="list-group">
+          <a href="/dashboard" class="list-group-item list-group-item-action active">Back</a>
+        </div>
+      </div>
+      <div class="col-md-9">
+        <!-- Content -->
+        <div class="card">
+          <div class="card-body">
+            <!-- Purchase Verification Form -->
+            <h5 class="card-title">Purchase Verification</h5>
+            <form method="post" action="/verify_purchase">
+              <div class="form-group">
+                <label for="paymentId">Payment ID</label>
+                <input type="text" name="paymentId" id="paymentId" class="form-control" placeholder="Enter your paymentId" required>
+              </div>
+              <button type="submit" class="btn btn-primary">Verify</button>
+            </form>
+          </div>
+        </div>
+        <div id="purchases-list">
+          <!-- Saved purchases will be displayed here -->
+        </div>
+        <!-- Display Saved Purchases -->
+        <div id="last-purchase-price">
+          <!-- Last Purchase Price will be displayed here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS and dependencies -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <script>
+    $(document).ready(function () {
+      function fetchSavedPurchases() {
+        $.ajax({
+          url: '/get_saved_purchases',
+          type: 'GET',
+          success: function (data) {
+            // Update  HTML to display the fetched data
+            $('#purchases-list').html('');
+            data.savedPurchases.forEach(function (purchase) {
+              const product = purchase.product;
+              if (product) {
+                const seller = product.user;
+                if (seller) {
+                  // Update  HTML to display the fetched data
+                  $('#purchases-list').append(`
+                    <div class="card">
+                      <div class="card-body">
+                        <h4 class="card-title">${product.name}</h4>
+                        <p class="card-text">${product.description}</p>
+                        <p class="card-text">Price: $${product.price}</p>
+                        <p class="card-text">Seller: ${seller.full_name}, ${seller.email}</p>
+                        <img src="${product.image}" class="img-fluid rounded" alt="Product Image" style="max-width: 100%; height: 300px;">
+                      </div>
+                    </div>
+                  `);
+                } else {
+                  console.log('Seller information is null or undefined.');
+                }
+              } else {
+                console.log('Product information is null or undefined.');
+              }
+            });
+
+            // Update the lastPurchasePrice on the client side
+            $('#last-purchase-price').text(`Last Purchase Price: $${data.lastPurchasePrice}`);
+          },
+          error: function (error) {
+            console.log('Error fetching saved purchases:', error);
+          }
+        });
+      }
+
+      // Call the fetchSavedPurchases function on page load
+      fetchSavedPurchases();
+
+      $('#verify-form').submit(function (event) {
+        event.preventDefault();
+        // Perform purchase verification logic
+
+        // After verification, fetch and display updated saved purchases
+        fetchSavedPurchases();
+      });
+    });
+  </script>
+</body>
+
+</html>

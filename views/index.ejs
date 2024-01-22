@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Big Business eCommerce</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand" href="#">MADA STORE</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/register">Sign Up</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/login">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Contact</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-section text-center py-5">
+    <div class="container">
+      <h1>Welcome to Mada store</h1>
+      <p>Your go-to destination for all your shopping needs</p>
+      <a href="/login" class="btn btn-primary">Shop Now</a>
+    </div>
+  </section>
+
+  <!-- Featured Products Section -->
+  <!-- Featured Products Section -->
+<section class="featured-products py-5">
+  <div class="container">
+    <h2 class="text-center mb-4">Featured Products</h2>
+    <div class="row" id="featuredProducts">
+      <!-- Featured products will be displayed here -->
+    </div>
+  </div>
+</section>
+
+
+  <!-- Footer -->
+  <footer class="footer bg-dark text-light text-center py-3">
+    <p>&copy; 2024 Big Business</p>
+  </footer>
+
+  <!-- Bootstrap JS and dependencies -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body><script>
+  $(document).ready(function() {
+    // AJAX request to fetch featured products
+    $.ajax({
+      url: '/getfeaturedproducts',
+      type: 'GET',
+      success: function(data) {
+        var featuredProductsHTML = '';
+        for (var i = 0; i < data.length; i++) {
+          featuredProductsHTML += '<div class="col-md-4 mb-4">';
+          featuredProductsHTML += '<div class="card">';
+          featuredProductsHTML += '<img src="' + data[i].image + '" class="card-img-top" alt="Product Image">';
+          featuredProductsHTML += '<div class="card-body">';
+          featuredProductsHTML += '<h5 class="card-title">' + data[i].name + '</h5>';
+          featuredProductsHTML += '<p class="card-text">' + data[i].description + '</p>';
+          featuredProductsHTML += '<a href="#" class="btn btn-primary">Buy Now</a>';
+          featuredProductsHTML += '</div>';
+          featuredProductsHTML += '</div>';
+          featuredProductsHTML += '</div>';
+        }
+        $('#featuredProducts').html(featuredProductsHTML);
+      },
+      error: function(error) {
+        console.log(error);
+      }
+    });
+  });
+</script>
+
+</html>

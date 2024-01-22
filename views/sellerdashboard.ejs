@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seller Dashboard - MADA STORE</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <style>
+
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .dashboard {
+      padding: 20px;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">MADA STORE</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item active">
+        <li class="nav-item">
+          <a class="nav-link" href="/settings">Settings</a>
+        </li>
+        <li class="nav-item">
+          <form action="/logout" method="POST" class="nav-link">
+            <button type="submit" class="btn btn-link nav-link">Logout</button>
+          </form>
+      </ul>
+    </div>
+  </nav>
+  <!-- Seller Dashboard -->
+  <div class="container dashboard">
+    <h2 class="text-center mb-4">Seller Dashboard</h2>
+
+    <div class="row">
+      <div class="col-md-3">
+        <!-- Sidebar -->
+        <div class="list-group">
+          <a href="/dashboard" class="list-group-item list-group-item-action active">Dashboard</a>
+          <a href="/product" class="list-group-item list-group-item-action">Products</a>
+          <a href="/order" class="list-group-item list-group-item-action">Orders</a>
+          <a href="#" class="list-group-item list-group-item-action">Sales</a>
+          <a href="#" class="list-group-item list-group-item-action">Settings</a>
+        </div>
+      </div>
+      <div class="col-md-9">
+        <!-- Content -->
+        <div class="card">
+          <div class="card-body">
+            <!-- Placeholder content for the selected section -->
+            <h5 class="card-title">Dashboard Overview</h5>
+            <p class="card-text">Welcome to your seller dashboard! Here, you can manage your products, view orders, track sales, and adjust settings.</p>
+          </div>
+           <!-- Content -->
+ <div class="card">
+  <div class="card-body">
+    <h5 class="card-title">Your Products</h5>
+    <!-- This div will contain the dynamically loaded products -->
+    <div id="productList"></div>
+  </div>
+</div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS and dependencies -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+ <script>
+   $(document).ready(function () {
+     // Make an AJAX request to fetch products
+     $.ajax({
+       url: '/getproducts', 
+       method: 'GET',
+       success: function (data) {
+         // Iterate through the fetched products and display them
+         data.forEach(function (product) {
+           $('#productList').append(
+             `<div class="card mb-3">
+               <div class="row g-0">
+                 <div class="col-md-4">
+                   <img src="${product.image}" class="img-fluid rounded-start" alt="Product Image">
+                 </div>
+                 <div class="col-md-8">
+                   <div class="card-body">
+                     <h5 class="card-title">${product.name}</h5>
+                     <p class="card-text">${product.description}</p>
+                     <p class="card-text"><strong>Price:</strong> $${product.price}</p>
+                     <!-- Additional details or actions can be added -->
+                   </div>
+                 </div>
+               </div>
+             </div>`
+           );
+         });
+       },
+       error: function (err) {
+         console.error('Error fetching products:', err);
+       }
+     });
+   });
+ </script>
+</html>
